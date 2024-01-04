@@ -1,4 +1,5 @@
 #include "binary_trees.h"
+#include <math.h>
 
 /**
  * binary_tree_height - Calculate the height of a binary tree.
@@ -46,14 +47,22 @@ size_t binary_tree_size(const binary_tree_t *tree)
  */
 int binary_tree_is_perfect(const binary_tree_t *tree)
 {
-	size_t height, size;
+    size_t height, size, i, power_of_2;
 
-	if (tree == NULL)
-	{
-		return (0);
-	}
-	height = binary_tree_height(tree);
-	size = binary_tree_size(tree);
-	return (size == pow(2, height) - 1);
+    if (tree == NULL)
+    {
+        return (0);
+    }
+
+    height = binary_tree_height(tree);
+    size = binary_tree_size(tree);
+
+    power_of_2 = 1;
+    for (i = 0; i < height; i++)
+    {
+        power_of_2 *= 2;
+    }
+
+    return (size == power_of_2 - 1);
 }
 
