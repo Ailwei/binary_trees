@@ -1,45 +1,62 @@
 #include "binary_trees.h"
 
+/**
+ * binary_tree_height - Measures the height of a binary tree.
+ * @tree: Pointer to the root node of the tree to measure the height.
+ *
+ * Return: If tree is NULL, the function must return 0.
+ */
+size_t binary_tree_height(const binary_tree_t *tree)
+{
+	if (tree)
+	{
+		int left_height = 0, right_height = 0;
+
+		if (tree->right)
+			right_height = 1 + binary_tree_height(tree->right);
+		if (tree->left)
+			left_height = 1 + binary_tree_height(tree->left);
+		return ((left_height > right_height) ? left_height : right_height);
+	}
+	return (0);
+}
 
 /**
- * binary_tree_levelorder - Traverses a binary tree using level-order travers.
+ * print_at_level - Prints nodes at a specific level.
  * @tree: Pointer to the root node of the tree to traverse.
  * @func: Pointer to a function to call for each node.
- *
- * If tree or func is NULL, do nothing.
+ * @level: Level to print.
+ */
+void print_at_level(const binary_tree_t *tree, void (*func)(int), int level)
+{
+	if (tree && func)
+	{
+		if (level == 1)
+			func(tree->n);
+		else
+		{
+			print_at_level(tree->left, func, level - 1);
+			print_at_level(tree->right, func, level - 1);
+		}
+	}
+}
+
+/**
+ * binary_tree_levelorder - Goes through a binary tree in level-order traversal.
+ * @tree: Pointer to the root node of the tree to traverse.
+ * @func: Pointer to a function to call for each node.
  */
 void binary_tree_levelorder(const binary_tree_t *tree, void (*func)(int))
 {
-	if (tree == NULL || func == NULL)
-		return;
+	size_t tree_height = 0, current_level = 1;
 
-	/* Use a queue for level-order traversal */
-	binary_tree_t **queue = NULL;
-	int front = 0, rear = 0;
-
-	/* Allocate space for the queue */
-	queue = malloc(sizeof(binary_tree_t *) * 1000);
-	if (queue == NULL)
-		return;
-
-	/* Enqueue the root node */
-	queue[rear++] = (binary_tree_t *)tree;
-
-	/* Perform level order traversal */
-	while (front < rear)
+	if (tree && func)
 	{
-		binary_tree_t *current = queue[front++];
-
-		/* Call the function for the current node */
-		func(current->n);
-
-		/* Enqueue left and right children if they exist */
-		if (current->left != NULL)
-			queue[rear++] = current->left;
-		if (current->right != NULL)
-			queue[rear++] = current->right;
+		tree_height = binary_tree_height(tree);
+		while (current_level <= tree_height + 1)
+		{
+			print_at_level(tree, func, current_level);
+			current_level++;
+		}
 	}
-
-	/* Free the allocated queue */
-	free(queue);
 }
